@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cns.aidd_reservation.seat.dto.MoveSeatInDto;
+import com.cns.aidd_reservation.seat.dto.MoveSeatOutDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveAvailableSeatsByDateInDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveAvailableSeatsByDateOutDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveTotalAvailableSeatInDto;
@@ -41,6 +43,11 @@ public class SeatService {
 	
 	public RetrieveTotalAvailableSeatOutDto retriveTotalAvailableSeat(RetrieveTotalAvailableSeatInDto retrieveTotalAvailableSeatInDto) throws Exception{
 		RetrieveTotalAvailableSeatOutDto result = new RetrieveTotalAvailableSeatOutDto();
+		return result;
+	}
+	
+	public MoveSeatOutDto moveSeat(MoveSeatInDto moveSeatInDto) throws Exception {
+		MoveSeatOutDto result = new MoveSeatOutDto();
 		return result;
 	}
 }

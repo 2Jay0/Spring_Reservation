@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cns.aidd_reservation.seat.dto.MoveSeatInDto;
+import com.cns.aidd_reservation.seat.dto.MoveSeatOutDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveAvailableSeatsByDateInDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveAvailableSeatsByDateOutDto;
 import com.cns.aidd_reservation.seat.dto.RetrieveTotalAvailableSeatInDto;
@@ -38,5 +40,10 @@ public class SeatController {
 	@RequestMapping(method = RequestMethod.GET, path = "/total_available")
 	public RetrieveTotalAvailableSeatOutDto retriveTotalAvailableSeat(@RequestBody RetrieveTotalAvailableSeatInDto retrieveTotalAvailableSeatInDto) throws Exception{
 		return seatService.retriveTotalAvailableSeat(retrieveTotalAvailableSeatInDto);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, path = "/move")
+	public MoveSeatOutDto moveSeat(MoveSeatInDto moveSeatInDto) throws Exception {
+		return seatService.moveSeat(moveSeatInDto);
 	}
 }
