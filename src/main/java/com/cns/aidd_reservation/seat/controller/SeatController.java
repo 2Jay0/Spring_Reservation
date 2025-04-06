@@ -1,5 +1,7 @@
 package com.cns.aidd_reservation.seat.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ public class SeatController {
 	private final SeatService seatService;
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/available")
-	public RetrieveAvailableSeatsByDateOutDto retrieveAvailableSeatsByDate(@RequestBody RetrieveAvailableSeatsByDateInDto retrieveAvailableSeatsByDateInDto) throws Exception{
+	public List<RetrieveAvailableSeatsByDateOutDto> retrieveAvailableSeatsByDate(@RequestBody RetrieveAvailableSeatsByDateInDto retrieveAvailableSeatsByDateInDto) throws Exception{
 		return seatService.retrieveAvailableSeatsByDate(retrieveAvailableSeatsByDateInDto);
 	}
 	
