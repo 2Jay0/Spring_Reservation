@@ -1,5 +1,17 @@
 package com.cns.aidd_reservation.reservation.dto;
 
-public class RetrieveReservationByEmployeeOutDto {
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+public class RetrieveReservationByEmployeeOutDto {
+	private int reservationId;
+	
+	@Builder
+	public RetrieveReservationByEmployeeOutDto(int reservationId) {
+		super();
+		this.reservationId = reservationId;
+	}
 }

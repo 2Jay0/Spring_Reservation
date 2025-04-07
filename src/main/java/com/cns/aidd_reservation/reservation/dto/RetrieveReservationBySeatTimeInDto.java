@@ -1,5 +1,17 @@
 package com.cns.aidd_reservation.reservation.dto;
 
-public class RetrieveReservationBySeatTimeInDto {
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+public class RetrieveReservationBySeatTimeInDto {
+	private int seatId;
+	
+	@Builder
+	public RetrieveReservationBySeatTimeInDto(int seatId) {
+		super();
+		this.seatId = seatId;
+	}
 }
