@@ -1,7 +1,9 @@
 package com.cns.aidd_reservation.reservation.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,13 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RetrieveSeatAvailableInDto {
 	private int seatId;
-	private Date date;
-	private String startTime;
-	private String endTime;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
 	
-	public RetrieveSeatAvailableInDto(int seatId, Date date, String startTime, String endTime) {
+	@Builder
+	public RetrieveSeatAvailableInDto(int seatId, Date date, LocalDateTime startTime, LocalDateTime endTime) {
+		super();
 		this.seatId = seatId;
-		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}

@@ -7,7 +7,7 @@ import com.cns.aidd_reservation.admin.dto.ForceCancelSeatInDto;
 import com.cns.aidd_reservation.admin.dto.ForceCancelSeatOutDto;
 import com.cns.aidd_reservation.admin.dto.ForceMoveSeatInDto;
 import com.cns.aidd_reservation.admin.dto.ForceMoveSeatOutDto;
-import com.cns.aidd_reservation.penalty.dto.RegisterPenaltyLogDto;
+import com.cns.aidd_reservation.penalty.dto.InsertPenaltyLogDto;
 import com.cns.aidd_reservation.penalty.repository.PenaltyRepository;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationOutDto;
@@ -30,44 +30,44 @@ public class AdminService {
 	private PenaltyRepository penaltyRepository;
 	
 	public ForceCancelSeatOutDto forceCancelSeat(ForceCancelSeatInDto forceCancelSeatInDto) throws Exception{
-		ForceCancelSeatOutDto result = new ForceCancelSeatOutDto(); 
-		result.setSuccessYn(false);
-		
-		//1. 입력값 검증
+		//1. Declare Variable
+		String status = "FORCED_CANCELED";
 		int reservationId = forceCancelSeatInDto.getReservationId();
-		if(0 == reservationId) {
+		
+		//2. Validation Input
+		if(reservationId == 0) {
 			throw new RuntimeException();
 		}
 		
-		//2. 예약 정보 조회
-		RetrieveReservationInDto retrieveReservationInDto = new RetrieveReservationInDto();
-		retrieveReservationInDto.setReservationId(reservationId);
+		//3. Retrieve Reservation
+		RetrieveReservationOutDto retrieveReservationOutDto = reservationRepository.retrieveReservation(
+				RetrieveReservationInDto.builder()
+				.reservationId(reservationId)
+				.build());
 		
-		RetrieveReservationOutDto retrieveReservationOutDto = reservationRepository.retrieveReservation(retrieveReservationInDto);
 		if(retrieveReservationOutDto == null) {
 			throw new RuntimeException();
 		}
 		
-		//3. 예약 상태 변경
-		UpdateReservationStatusDto updateReservationStatusDto = new UpdateReservationStatusDto();
-		updateReservationStatusDto.setReservationId(reservationId);
-		updateReservationStatusDto.setStatus("FORCED_CANCEL");
+		//4. Update Reservation Status
+		int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
+				.reservationId(reservationId)
+				.status(status)
+				.build());
 		
-		int updateCnt = reservationRepository.updateReservationStatus(updateReservationStatusDto);
 		if(updateCnt < 1) {
 			throw new RuntimeException();
 		}
 		
-		//4. 예약 성공
-		result.setSuccessYn(true);
-		result.setStatus("FORCED_CANCEL");
-		return result;
+		ForceCancelSeatOutDto forceCancelSeatOutDto = ForceCancelSeatOutDto.builder()
+				.status(status)
+				.successYn(true)
+				.build(); 
+		return forceCancelSeatOutDto;
 	}
 	
 	public ForceMoveSeatOutDto forceMoveSeat(ForceMoveSeatInDto moveSeatForcedInDto) throws Exception{
-		ForceMoveSeatOutDto result = new ForceMoveSeatOutDto();
-		
-		//1. 입력값 검증
+		//1. Validation Input
 		int reservationId = moveSeatForcedInDto.getReservationId();
 		int seatId = moveSeatForcedInDto.getSeatId();
 		String reason = moveSeatForcedInDto.getReason();
@@ -84,43 +84,48 @@ public class AdminService {
 			throw new RuntimeException();
 		}
 		
-		//2. 가능 예약 정보 조회
+		//TODO
+		//2. Validation Seat Available
 		//private 함수로 종료예정시간 get하는 함수
-		String newEndTime = "";
-		RetrieveSeatAvailableInDto retrieveSeatAvailableInDto = new RetrieveSeatAvailableInDto();
-		retrieveSeatAvailableInDto.setSeatId(seatId);
-		retrieveSeatAvailableInDto.setDate(null);
-		retrieveSeatAvailableInDto.setStartTime(newEndTime);
-		retrieveSeatAvailableInDto.setEndTime(newEndTime);
 		
-		RetrieveSeatAvailableOutDto retrieveSeatAvailableOutDto = reservationRepository.retrieveSeatAvailable(retrieveSeatAvailableInDto);
+		RetrieveSeatAvailableOutDto retrieveSeatAvailableOutDto = reservationRepository.retrieveSeatAvailable(RetrieveSeatAvailableInDto.builder()
+				.seatId(seatId)
+				.startTime(null)
+				.endTime(null)
+				.build());
+		
 		if(retrieveSeatAvailableOutDto != null) {
-			throw new RuntimeException();
+			throw new RuntimeException("Already Reserved Seat");
 		}
 		
-		//3. 예약 정보 수정
-		UpdateReservationSeatDto updateReservationSeatDto = new UpdateReservationSeatDto();
-		updateReservationSeatDto.setReservationId(reservationId);
-		updateReservationSeatDto.setReservationId(seatId);
-		updateReservationSeatDto.setEndTime(newEndTime);
+		//3. Update Reservation
+		int updateCnt = reservationRepository.updateReservationSeat(UpdateReservationSeatDto.builder()
+				.reservationId(reservationId)
+				.seatId(seatId)
+				.endTime(null)
+				.build());
 		
-		int updateCnt = reservationRepository.updateReservationSeat(updateReservationSeatDto);
 		if(updateCnt < 1) {
 			throw new RuntimeException();
 		}
 		
-		//4. 패널티 로그 등록
-		RegisterPenaltyLogDto registerPenaltyLogDto = new RegisterPenaltyLogDto();
-		registerPenaltyLogDto.setReservationId(reservationId);
-		registerPenaltyLogDto.setEmployeeId(reservationId);
-		registerPenaltyLogDto.setGivenAt(null);
-		registerPenaltyLogDto.setReason(reason);
+		//TODO
+		//4. Insert Penalty Log
+		int insertCnt = penaltyRepository.insertPenaltyLog(InsertPenaltyLogDto.builder()
+				.reservationId(reservationId)
+				.employeeId(updateCnt)
+				.givenAt(null)
+				.reason(reason)
+				.build());
 		
-		int insertCnt = penaltyRepository.registerPenaltyLog(registerPenaltyLogDto);
 		if(insertCnt < 1) {
 			throw new RuntimeException();
 		}
 		
-		return result;
+		//TODO
+		ForceMoveSeatOutDto forceMoveSeatOutDto = ForceMoveSeatOutDto.builder()
+				.status(null)
+				.build();
+		return forceMoveSeatOutDto;
 	}
 }

@@ -1,5 +1,8 @@
 package com.cns.aidd_reservation.reservation.dto;
 
+import java.time.LocalDateTime;
+
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,8 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RetrieveReservationOutDto {
 	private int reservationId;
+	private int seatId;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
 	
-	public RetrieveReservationOutDto(int reservationId) {
+	@Builder
+	public RetrieveReservationOutDto(int reservationId, int seatId, LocalDateTime startTime, LocalDateTime endTime) {
+		super();
 		this.reservationId = reservationId;
+		this.seatId = seatId;
+		this.startTime = startTime;
+		this.endTime = endTime;
 	}
 }

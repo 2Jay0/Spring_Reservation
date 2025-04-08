@@ -2,6 +2,7 @@ package com.cns.aidd_reservation.reservation.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.cns.aidd_reservation.reservation.dto.InsertReservationDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
@@ -17,6 +18,7 @@ public interface ReservationRepository {
 	public RetrieveReservationOutDto retrieveReservation(RetrieveReservationInDto retrieveReservationInDto) throws Exception;
 	public RetrieveSeatAvailableOutDto retrieveSeatAvailable(RetrieveSeatAvailableInDto retrieveSeatAvailableInDto) throws Exception;
 	public RetrieveReservationBySeatTimeOutDto retrieveReservationBySeatTime(RetrieveReservationBySeatTimeInDto retrieveReservationBySeatTimeInDto) throws Exception;
+	public int insertReservation(InsertReservationDto insertReservationDto) throws Exception;
 	public int updateReservationStatus(UpdateReservationStatusDto updateReservationStatusDto) throws Exception;
 	public int updateReservationSeat(UpdateReservationSeatDto updateReservationSeatDto) throws Exception;
 	public int updateReservationTime(UpdateReservationTimeDto updateReservationTimeDto) throws Exception;

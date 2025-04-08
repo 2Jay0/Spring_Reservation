@@ -1,19 +1,18 @@
 package com.cns.aidd_reservation.seat.dto;
 
-import java.util.Date;
-
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 public class RetrieveAvailableSeatsByDateInDto {
-	private Date date;
 	private String startTime;
 	private String endTime;
 	
-	public RetrieveAvailableSeatsByDateInDto(Date date, String startTime, String endTime) {
-		this.date = date;
+	@Builder
+	public RetrieveAvailableSeatsByDateInDto(String startTime, String endTime) {
+		super();
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}
