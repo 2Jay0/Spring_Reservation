@@ -17,8 +17,8 @@ import com.cns.aidd_reservation.reservation.dto.RegisterReservationInDto;
 import com.cns.aidd_reservation.reservation.dto.RegisterReservationOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationByEmployeeInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationByEmployeeOutDto;
+import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryInDto;
+import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
@@ -78,13 +78,13 @@ public class ReservationService {
 	}
 	
 	public CancelReservationOutDto cancelReservation(CancelReservationInDto cancelReservationInDto) throws Exception {
-		//1. 입력값 검증
+		//1. Validate Input
 		int reservationId = cancelReservationInDto.getReservationId();
 		
 		if(0 == reservationId) {
 			throw new RuntimeException();
 		}
-		//2. 좌석 예약 취소
+		//2. Cancel Seat
 		int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
 				.reservationId(reservationId)
 				.status("CANCELED")
@@ -191,11 +191,13 @@ public class ReservationService {
 		return extendReservationTimeOutDto;
 	}
 	
-	public RetrieveReservationByEmployeeOutDto retrieveReservationByEmployee(RetrieveReservationByEmployeeInDto retrieveReservationByEmployeeInDto) throws Exception {
-		RetrieveReservationByEmployeeOutDto result = new RetrieveReservationByEmployeeOutDto();
+	public RetrieveReservationHistoryOutDto retrieveReservationHistory(RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
+		//1. Declare Variable
 		
+		
+		
+		RetrieveReservationHistoryOutDto retrieveReservationHistoryOutDto = new RetrieveReservationHistoryOutDto();
 		//history
-		
-		return result;
+		return retrieveReservationHistoryOutDto;
 	}
 }

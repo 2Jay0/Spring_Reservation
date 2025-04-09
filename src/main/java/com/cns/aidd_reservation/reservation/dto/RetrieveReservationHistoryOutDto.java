@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RetrieveReservationByEmployeeOutDto {
+public class RetrieveReservationHistoryOutDto {
 	private int reservationId;
 	
 	@Builder
-	public RetrieveReservationByEmployeeOutDto(int reservationId) {
+	public RetrieveReservationHistoryOutDto(int reservationId) {
 		super();
 		this.reservationId = reservationId;
 	}

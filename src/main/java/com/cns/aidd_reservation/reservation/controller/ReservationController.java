@@ -14,8 +14,8 @@ import com.cns.aidd_reservation.reservation.dto.RegisterReservationInDto;
 import com.cns.aidd_reservation.reservation.dto.RegisterReservationOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationByEmployeeInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationByEmployeeOutDto;
+import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryInDto;
+import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryOutDto;
 import com.cns.aidd_reservation.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class ReservationController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/history")
-	public RetrieveReservationByEmployeeOutDto retrieveReservationByEmployee(@RequestBody RetrieveReservationByEmployeeInDto retrieveReservationByEmployeeInDto) throws Exception {
-		return reservationService.retrieveReservationByEmployee(retrieveReservationByEmployeeInDto);
+	public RetrieveReservationHistoryOutDto retrieveReservationHistory(@RequestBody RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
+		return reservationService.retrieveReservationHistory(retrieveReservationHistoryInDto);
 	}
 }
