@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RetrieveReservationHistoryOutDto {
+public class RetrieveReservationHistoryListOutDto {
 	private String seatName;
 	private String buildingName;
 	private int floor;
@@ -18,7 +18,7 @@ public class RetrieveReservationHistoryOutDto {
 	private int reservationId;
 	
 	@Builder
-	public RetrieveReservationHistoryOutDto(String seatName, String buildingName, int floor,
+	public RetrieveReservationHistoryListOutDto(String seatName, String buildingName, int floor,
 			int seatId, String date, String startTime, String endTime, String status, int reservationId) {
 		super();
 		this.seatName = seatName;

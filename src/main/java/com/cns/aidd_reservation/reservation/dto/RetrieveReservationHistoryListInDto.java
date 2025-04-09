@@ -6,18 +6,18 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RetrieveReservationHistoryInDto {
+public class RetrieveReservationHistoryListInDto {
+	private int employeeId;
 	private String startDate;
 	private String endDate;
-	private Integer skip;
-	private Integer limit;
+	private int skip;
+	private int limit;
 	
 	@Builder
-	public RetrieveReservationHistoryInDto(String startDate, String endDate, Integer skip, Integer limit) {
+	public RetrieveReservationHistoryListInDto(int employeeId, String startDate, String endDate, int skip, int limit) {
 		super();
+		this.employeeId = employeeId;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.skip = skip;
-		this.limit = limit;
 	}
 }

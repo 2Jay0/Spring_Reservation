@@ -11,15 +11,20 @@ import lombok.NoArgsConstructor;
 public class RetrieveReservationOutDto {
 	private int reservationId;
 	private int seatId;
+	private int employeeId;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
+	private String status;
 	
 	@Builder
-	public RetrieveReservationOutDto(int reservationId, int seatId, LocalDateTime startTime, LocalDateTime endTime) {
+	public RetrieveReservationOutDto(int reservationId, int seatId, int employeeId
+			, LocalDateTime startTime, LocalDateTime endTime, String status) {
 		super();
 		this.reservationId = reservationId;
 		this.seatId = seatId;
+		this.employeeId = employeeId;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.status = status;
 	}
 }

@@ -1,4 +1,4 @@
-package com.cns.aidd_reservation.reservation.dto;
+package com.cns.aidd_reservation.seatMgmt.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ExtendReservationTimeInDto {
+public class MoveSeatInDto {
 	private int reservationId;
+	private int seatId;
 	
 	@Builder
-	public ExtendReservationTimeInDto(int reservationId) {
+	public MoveSeatInDto(int reservationId, int seatId) {
 		super();
 		this.reservationId = reservationId;
+		this.seatId = seatId;
 	}
 }

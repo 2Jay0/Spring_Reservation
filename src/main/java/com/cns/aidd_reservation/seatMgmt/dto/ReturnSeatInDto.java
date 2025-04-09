@@ -1,4 +1,4 @@
-package com.cns.aidd_reservation.seat.dto;
+package com.cns.aidd_reservation.seatMgmt.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,14 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MoveSeatInDto {
+public class ReturnSeatInDto {
 	private int reservationId;
-	private int seatId;
 	
 	@Builder
-	public MoveSeatInDto(int reservationId, int seatId) {
+	public ReturnSeatInDto(int reservationId) {
 		super();
 		this.reservationId = reservationId;
-		this.seatId = seatId;
 	}
 }

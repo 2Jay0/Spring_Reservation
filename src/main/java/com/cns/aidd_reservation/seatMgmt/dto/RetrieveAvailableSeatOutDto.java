@@ -1,16 +1,19 @@
-package com.cns.aidd_reservation.seat.dto;
+package com.cns.aidd_reservation.seatMgmt.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RetrieveAvailableSeatsByDateOutDto {
+public class RetrieveAvailableSeatOutDto {
 	private String buildingName;
 	private String floor;
 	private String seatName;
 	
-	public RetrieveAvailableSeatsByDateOutDto(String buildingName, String floor, String seatName) {
+	@Builder
+	public RetrieveAvailableSeatOutDto(String buildingName, String floor, String seatName) {
+		super();
 		this.buildingName = buildingName;
 		this.floor = floor;
 		this.seatName = seatName;

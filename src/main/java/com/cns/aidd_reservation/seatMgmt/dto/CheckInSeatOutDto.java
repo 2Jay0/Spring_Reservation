@@ -1,4 +1,4 @@
-package com.cns.aidd_reservation.reservation.dto;
+package com.cns.aidd_reservation.seatMgmt.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RegisterReservationOutDto {
+public class CheckInSeatOutDto {
 	private boolean successYn;
 	
 	@Builder
-	public RegisterReservationOutDto(boolean successYn) {
+	public CheckInSeatOutDto(boolean successYn) {
 		super();
 		this.successYn = successYn;
 	}
+
 }

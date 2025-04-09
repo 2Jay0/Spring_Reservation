@@ -1,5 +1,7 @@
 package com.cns.aidd_reservation.reservation.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +50,7 @@ public class ReservationController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/history")
-	public RetrieveReservationHistoryOutDto retrieveReservationHistory(@RequestBody RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
+	public List<RetrieveReservationHistoryOutDto> retrieveReservationHistory(@RequestBody RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
 		return reservationService.retrieveReservationHistory(retrieveReservationHistoryInDto);
 	}
 }

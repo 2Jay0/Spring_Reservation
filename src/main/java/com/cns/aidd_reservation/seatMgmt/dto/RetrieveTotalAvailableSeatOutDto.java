@@ -1,4 +1,4 @@
-package com.cns.aidd_reservation.seat.dto;
+package com.cns.aidd_reservation.seatMgmt.dto;
 
 public class RetrieveTotalAvailableSeatOutDto {
 
