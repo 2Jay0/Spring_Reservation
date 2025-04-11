@@ -7,6 +7,7 @@ import com.cns.aidd_reservation.admin.dto.ForceCancelSeatInDto;
 import com.cns.aidd_reservation.admin.dto.ForceCancelSeatOutDto;
 import com.cns.aidd_reservation.admin.dto.ForceMoveSeatInDto;
 import com.cns.aidd_reservation.admin.dto.ForceMoveSeatOutDto;
+import com.cns.aidd_reservation.exception.BusinessException;
 import com.cns.aidd_reservation.penalty.dto.InsertPenaltyLogDto;
 import com.cns.aidd_reservation.penalty.repository.PenaltyRepository;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
@@ -36,7 +37,7 @@ public class AdminService {
 		
 		//2. Validation Input
 		if(reservationId == 0) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		//3. Retrieve Reservation
@@ -46,7 +47,7 @@ public class AdminService {
 				.build());
 		
 		if(retrieveReservationOutDto == null) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		//4. Update Reservation Status
@@ -56,7 +57,7 @@ public class AdminService {
 				.build());
 		
 		if(updateCnt < 1) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		ForceCancelSeatOutDto forceCancelSeatOutDto = ForceCancelSeatOutDto.builder()
@@ -73,15 +74,15 @@ public class AdminService {
 		String reason = moveSeatForcedInDto.getReason();
 		
 		if(0 == reservationId) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		if(0 == seatId) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		if("".equals(reason)) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		//TODO
@@ -95,7 +96,7 @@ public class AdminService {
 				.build());
 		
 		if(retrieveSeatAvailableOutDto != null) {
-			throw new RuntimeException("Already Reserved Seat");
+			throw new BusinessException("Already Reserved Seat");
 		}
 		
 		//3. Update Reservation
@@ -106,7 +107,7 @@ public class AdminService {
 				.build());
 		
 		if(updateCnt < 1) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		//TODO
@@ -119,7 +120,7 @@ public class AdminService {
 				.build());
 		
 		if(insertCnt < 1) {
-			throw new RuntimeException();
+			throw new BusinessException();
 		}
 		
 		//TODO

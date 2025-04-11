@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryListInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryListOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryOutDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
 import com.cns.aidd_reservation.reservation.dto.RetrieveReservationOutDto;
@@ -32,7 +29,6 @@ import com.cns.aidd_reservation.reservation.dto.RetrieveSeatAvailableOutDto;
 import com.cns.aidd_reservation.reservation.dto.UpdateReservationStatusDto;
 import com.cns.aidd_reservation.reservation.dto.UpdateReservationTimeDto;
 import com.cns.aidd_reservation.reservation.repository.ReservationRepository;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatOutDto;
 
 import lombok.RequiredArgsConstructor;
 

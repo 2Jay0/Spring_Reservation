@@ -20,6 +20,8 @@ import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorOutDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalAvailableSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalAvailableSeatOutDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatInDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatOutDto;
 import com.cns.aidd_reservation.seatMgmt.dto.ReturnSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.ReturnSeatOutDto;
 import com.cns.aidd_reservation.seatMgmt.service.SeatMgmtService;
@@ -58,14 +60,19 @@ public class SeatMgmtController {
 		return seatMgmtService.checkInSeat(checkInSeatInDto);
 	}
 	
-//	@RequestMapping(method = RequestMethod.GET, path = "/building")
-//	public RetrieveBuildingOutDto retrieveBuilding(RetrieveBuildingInDto retrieveBuildingInDto) throws Exception {
-//		return seatMgmtService.checkInSeat(checkInSeatInDto);
-//	}
-//	
-//	@RequestMapping(method = RequestMethod.GET, path = "/floor")
-//	public RetrieveFloorOutDto retrieveFloor(RetrieveFloorInDto retrieveFloorInDto) throws Exception {
-//		return seatMgmtService.checkInSeat(retrieveFloorInDto);
-//	}
+	@RequestMapping(method = RequestMethod.GET, path = "/building")
+	public List<RetrieveBuildingOutDto> retrieveBuilding(RetrieveBuildingInDto retrieveBuildingInDto) throws Exception {
+		return seatMgmtService.retrieveBuilding(retrieveBuildingInDto);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/floor")
+	public List<RetrieveFloorOutDto> retrieveFloor(RetrieveFloorInDto retrieveFloorInDto) throws Exception {
+		return seatMgmtService.retrieveFloor(retrieveFloorInDto);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/total_seat")
+	public List<RetrieveTotalSeatOutDto> retrieveTotalSeat(RetrieveTotalSeatInDto retrieveTotalSeatInDto) throws Exception {
+		return seatMgmtService.retrieveTotalSeat(retrieveTotalSeatInDto);
+	}
 	
 }

@@ -25,8 +25,14 @@ import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatOutDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatsByDateInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatsByDateOutDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveBuildingInDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveBuildingOutDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorInDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorOutDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalAvailableSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalAvailableSeatOutDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatInDto;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatOutDto;
 import com.cns.aidd_reservation.seatMgmt.dto.ReturnSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.ReturnSeatOutDto;
 import com.cns.aidd_reservation.seatMgmt.repository.SeatMgmtRepository;
@@ -241,4 +247,15 @@ public class SeatMgmtService {
 		return checkInSeatOutDto;
 	}
 
+	public List<RetrieveBuildingOutDto> retrieveBuilding(RetrieveBuildingInDto retrieveBuildingInDto) throws Exception {
+		return seatMgmtRepository.retrieveBuilding(retrieveBuildingInDto);
+	}
+	
+	public List<RetrieveFloorOutDto> retrieveFloor(RetrieveFloorInDto retrieveFloorInDto) throws Exception {
+		return seatMgmtRepository.retrieveFloor(retrieveFloorInDto);
+	}
+	
+	public List<RetrieveTotalSeatOutDto> retrieveTotalSeat(RetrieveTotalSeatInDto retrieveTotalSeatInDto) throws Exception {
+		return seatMgmtRepository.retrieveTotalSeat(retrieveTotalSeatInDto);
+	}
 }

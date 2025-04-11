@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RetrieveSeatInDto {
+public class RetrieveTotalSeatInDto {
 
 }
