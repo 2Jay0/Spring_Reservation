@@ -61,7 +61,7 @@ public class SeatMgmtService {
 		String startDate = retrieveAvailableSeatInDto.getDate() + retrieveAvailableSeatInDto.getStartTime();
 		String endDate = retrieveAvailableSeatInDto.getDate() + retrieveAvailableSeatInDto.getEndTime();
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHMM");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 		LocalDateTime startTime = LocalDateTime.parse(startDate, formatter);
 		LocalDateTime endTime = LocalDateTime.parse(endDate, formatter);	
 		
@@ -84,13 +84,13 @@ public class SeatMgmtService {
 				.build());
 		
 		return retrieveAvailableSeatsByDateOutDtoList.stream()
-			    .map(dto -> {
-			    	RetrieveAvailableSeatOutDto retrieveAvailableSeatOutDto = new RetrieveAvailableSeatOutDto();
-			    	retrieveAvailableSeatOutDto.setBuildingName(dto.getBuildingName());
-			    	retrieveAvailableSeatOutDto.setFloor(dto.getFloor());
-			    	retrieveAvailableSeatOutDto.setSeatName(dto.getSeatName());
-			        return retrieveAvailableSeatOutDto;
-			    }).collect(Collectors.toList());
+			    .map(dto ->
+			    	RetrieveAvailableSeatOutDto.builder()
+						.buildingName(dto.getBuildingName())
+			    		.floor(dto.getFloor())
+						.seatName(dto.getSeatName())
+						.seatId(dto.getSeatId()).build()
+			    ).collect(Collectors.toList());
 	}
 	
 	public ReturnSeatOutDto returnSeat(ReturnSeatInDto returnSeatInDto) throws Exception{
@@ -115,7 +115,7 @@ public class SeatMgmtService {
 		String status = retrieveReservationOutDto.getStatus();
 		
 		//4. Check In
-		if(status == "IN_USE") {
+		if(status.equals("IN_USE")) {
 			int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
 							.reservationId(reservationId)
 							.status("COMPLETED")
@@ -127,11 +127,10 @@ public class SeatMgmtService {
 		} else {
 			result = false;
 		}
-				
-		ReturnSeatOutDto returnSeatOutDto = ReturnSeatOutDto.builder()
+
+		return ReturnSeatOutDto.builder()
 				.successYn(result)
 				.build();
-		return returnSeatOutDto;
 	}
 	
 	public RetrieveTotalAvailableSeatOutDto retriveTotalAvailableSeat(RetrieveTotalAvailableSeatInDto retrieveTotalAvailableSeatInDto) throws Exception{
@@ -198,11 +197,9 @@ public class SeatMgmtService {
 			throw new BusinessException("Exception Update");
 		}
 		
-		MoveSeatOutDto moveSeatOutDto = MoveSeatOutDto.builder()
+		return MoveSeatOutDto.builder()
 				.successYn(true)
 				.build();
-		
-		return moveSeatOutDto;
 	}
 	
 	public CheckInSeatOutDto checkInSeat(CheckInSeatInDto checkInSeatInDto) throws Exception {
@@ -227,7 +224,7 @@ public class SeatMgmtService {
 		String status = retrieveReservationOutDto.getStatus();
 		
 		//4. Check In
-		if(status == "RESERVED") {
+		if(status.equals("RESERVED")) {
 			int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
 					.reservationId(reservationId)
 					.status("CANCELED")
@@ -236,15 +233,13 @@ public class SeatMgmtService {
 			if(updateCnt < 1) {
 				throw new BusinessException("Update Error");
 			}
-		} else {
-			result = false;
+
+			result = true;
 		}
 		
-		CheckInSeatOutDto checkInSeatOutDto = CheckInSeatOutDto.builder()
+		return CheckInSeatOutDto.builder()
 				.successYn(result)
 				.build();
-		
-		return checkInSeatOutDto;
 	}
 
 	public List<RetrieveBuildingOutDto> retrieveBuilding(RetrieveBuildingInDto retrieveBuildingInDto) throws Exception {

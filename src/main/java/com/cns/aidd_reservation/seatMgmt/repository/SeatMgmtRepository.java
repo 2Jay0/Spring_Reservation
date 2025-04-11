@@ -2,16 +2,8 @@ package com.cns.aidd_reservation.seatMgmt.repository;
 
 import java.util.List;
 
+import com.cns.aidd_reservation.seatMgmt.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatsByDateInDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatsByDateOutDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveBuildingInDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveBuildingOutDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorInDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveFloorOutDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatInDto;
-import com.cns.aidd_reservation.seatMgmt.dto.RetrieveTotalSeatOutDto;
 
 @Mapper
 public interface SeatMgmtRepository {

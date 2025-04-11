@@ -4,30 +4,16 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.cns.aidd_reservation.common.security.JwtUtil;
+import com.cns.aidd_reservation.reservation.dto.*;
+import com.cns.aidd_reservation.seatMgmt.dto.RetrieveAvailableSeatOutDto;
+import com.cns.aidd_reservation.seatMgmt.repository.SeatMgmtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cns.aidd_reservation.exception.BusinessException;
-import com.cns.aidd_reservation.reservation.dto.CancelReservationInDto;
-import com.cns.aidd_reservation.reservation.dto.CancelReservationOutDto;
-import com.cns.aidd_reservation.reservation.dto.ExtendReservationTimeInDto;
-import com.cns.aidd_reservation.reservation.dto.ExtendReservationTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.InsertReservationDto;
-import com.cns.aidd_reservation.reservation.dto.RegisterReservationInDto;
-import com.cns.aidd_reservation.reservation.dto.RegisterReservationOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationBySeatTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveSeatAvailableInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveSeatAvailableOutDto;
-import com.cns.aidd_reservation.reservation.dto.UpdateReservationStatusDto;
-import com.cns.aidd_reservation.reservation.dto.UpdateReservationTimeDto;
 import com.cns.aidd_reservation.reservation.repository.ReservationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,9 +24,23 @@ public class ReservationService {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
-	
-	public RegisterReservationOutDto registerReservation(RegisterReservationInDto registerReservationInDto) throws Exception {	
+    @Autowired
+    private SeatMgmtRepository seatMgmtRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+	public List<RetrieveCurrentReservationOutDto> retrieveCurrentReservation(String token, RetrieveCurrentReservationInDto retrieveCurrentReservationInDto) throws Exception{
 		//1. Declare variable
+		String employeeId = jwtUtil.extractSubject(token); //JWTToken get
+
+		retrieveCurrentReservationInDto.setEmployeeId(Integer.parseInt(employeeId));
+		return reservationRepository.retrieveCurrentReservation(retrieveCurrentReservationInDto);
+	}
+
+	public RegisterReservationOutDto registerReservation(String token, RegisterReservationInDto registerReservationInDto) throws Exception {
+		//1. Declare variable
+		String employeeId = jwtUtil.extractSubject(token); //JWTToken get
+
 		int seatId = registerReservationInDto.getSeatId();
 				
 		LocalDateTime now = LocalDateTime.now();
@@ -48,23 +48,43 @@ public class ReservationService {
 		String startDate = registerReservationInDto.getDate() + registerReservationInDto.getStartTime();
 		String endDate = registerReservationInDto.getDate() + registerReservationInDto.getEndTime();
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHMM");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 		LocalDateTime startTime = LocalDateTime.parse(startDate, formatter);
 		LocalDateTime endTime = LocalDateTime.parse(endDate, formatter);
 		
 		//2. Validation Input
 		if(startTime.isBefore(now)) {
-			throw new RuntimeException("Current time can't be bigger than Start Time");
+			throw new BusinessException("Current time can't be bigger than Start Time");
 		}
 		
 		if(!startTime.isBefore(endTime)) {
-			throw new RuntimeException("Start time can't be bigger than End Time");
+			throw new BusinessException("Start time can't be bigger than End Time");
 		}
-		//2. 인사관리 API 연결
-		
-		//3. 예약정보 조회(직원ID)
-		
-		//4. Register Reservation
+
+		//2. 인사 정보 API
+		//TODO : Detail Logic
+
+		//3. Retrieve Reservation (Employee)
+		RetrieveReservationByEmployeeOutDto retrieveReservationByEmployeeOutDto = reservationRepository.retrieveReservationByEmployee(RetrieveReservationByEmployeeInDto.builder()
+						.employeeId(Integer.parseInt(employeeId))
+						.build());
+
+		if(retrieveReservationByEmployeeOutDto != null) {
+			throw new BusinessException("Already have Seat");
+		}
+
+		//4. Retrieve Seat Available
+		RetrieveSeatAvailableOutDto retrieveSeatAvailableOutDto = reservationRepository.retrieveSeatAvailable(RetrieveSeatAvailableInDto.builder()
+						.seatId(seatId)
+						.startTime(startTime)
+						.endTime(endTime)
+						.build());
+
+		if(retrieveSeatAvailableOutDto != null) {
+			throw new BusinessException("Already Reserved");
+		}
+
+		//5. Register Reservation
 		int insertCnt = reservationRepository.insertReservation(InsertReservationDto.builder()
 				.seatId(seatId)
 				.startTime(startTime)
@@ -72,33 +92,48 @@ public class ReservationService {
 				.build());
 		
 		if(insertCnt < 1) {
-			throw new RuntimeException("Insert Exception");
+			throw new BusinessException("Insert Exception");
 		}
-		RegisterReservationOutDto registerReservationOutDto = RegisterReservationOutDto.builder()
-				.successYn(true)
-				.build();
-		return registerReservationOutDto;
+
+		return RegisterReservationOutDto.builder().successYn(true).build();
 	}
 	
 	public CancelReservationOutDto cancelReservation(CancelReservationInDto cancelReservationInDto) throws Exception {
-		//1. Validate Input
+		//1. Declare Variable
 		int reservationId = cancelReservationInDto.getReservationId();
-		
+		boolean result = true;
+
+		//2. Validate Input
 		if(0 == reservationId) {
-			throw new RuntimeException();
+			throw new BusinessException("INPUT ERROR");
 		}
-		//2. Cancel Seat
-		int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
+
+		//3. Retrieve Reservation
+		RetrieveReservationOutDto retrieveReservationOutDto = reservationRepository.retrieveReservation(RetrieveReservationInDto.builder()
 				.reservationId(reservationId)
-				.status("CANCELED")
 				.build());
-		
-		if(updateCnt < 1) {
-			throw new RuntimeException();
+
+		if(retrieveReservationOutDto == null) {
+			throw new BusinessException("No Reservation Information");
 		}
-		
-		CancelReservationOutDto result = new CancelReservationOutDto();
-		return result;
+
+		String status = retrieveReservationOutDto.getStatus();
+
+		//3. Check Status / Cancel Seat
+		if(status.equals("RESERVED")){
+			int updateCnt = reservationRepository.updateReservationStatus(UpdateReservationStatusDto.builder()
+					.reservationId(reservationId)
+					.status("CANCELED")
+					.build());
+
+			if(updateCnt < 1) {
+				throw new BusinessException("Update Exception");
+			}
+		} else {
+			result = false;
+		}
+
+		return CancelReservationOutDto.builder().successYn(result).build();
 	}
 	
 	public RetrieveRemainSeatTimeOutDto retrieveRemainSeatTime(RetrieveRemainSeatTimeInDto retrieveRemainSeatTimeInDto) throws Exception {
@@ -141,7 +176,8 @@ public class ReservationService {
 	public ExtendReservationTimeOutDto extendReservationTime(ExtendReservationTimeInDto extendReservationTimeInDto) throws Exception {
 		//1. Declare variable
 		int reservationId = extendReservationTimeInDto.getReservationId();
-		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
 		//2. Validation Input
 		if (reservationId == 0) {
 		    throw new BusinessException("Invalid reservationId");
@@ -157,10 +193,16 @@ public class ReservationService {
 		}
 		
 		int seatId = retrieveReservationOutDto.getSeatId();
-		int employeeId = retrieveReservationOutDto.getEmployeeId();
+		int employeeId = 0; //JWTToken
+
 		LocalDateTime curEndTime = retrieveReservationOutDto.getEndTime();
 		LocalDateTime extendTime = curEndTime.plusHours(1);
-		
+
+		//TODO : Modify
+		if (!curEndTime.toLocalDate().equals(extendTime.toLocalDate())) {
+			throw new BusinessException("Next Day");
+		}
+
 		//4. Validation Extend Available
 		RetrieveSeatAvailableOutDto retrieveSeatAvailableOutDto = reservationRepository.retrieveSeatAvailable(RetrieveSeatAvailableInDto.builder()
 				.seatId(seatId)
@@ -172,9 +214,18 @@ public class ReservationService {
 			throw new BusinessException("Already Reserved");
 		}
 		
-		//5. Validate 
-		//오늘일자, 사원 => sum값
-		
+		//5. Retrieve Total Time
+		RetrieveTotalTimeOutDto retrieveTotalTimeOutDto = reservationRepository.retrieveTotalTime(RetrieveTotalTimeInDto.builder()
+						.employeeId(employeeId)
+						.date(curEndTime.format(formatter))
+						.build());
+
+		if(retrieveTotalTimeOutDto != null) {
+			if(retrieveTotalTimeOutDto.getTotalTime() >= 8)	{
+				throw new BusinessException("Exceed 8 Hours");
+			}
+		}
+
 		//6. Extend
 		int updateCnt = reservationRepository.updateReservationTime(UpdateReservationTimeDto.builder()
 				.reservationId(reservationId)
@@ -182,31 +233,41 @@ public class ReservationService {
 				.build());
 		
 		if(updateCnt < 1) {
-			throw new RuntimeException("Already Reserved");
+			throw new BusinessException("Already Reserved");
 		}
-		
-		ExtendReservationTimeOutDto extendReservationTimeOutDto = ExtendReservationTimeOutDto.builder()
+
+		return ExtendReservationTimeOutDto.builder()
 				.successYn(true)
 				.build();
-		return extendReservationTimeOutDto;
 	}
 	
-	public List<RetrieveReservationHistoryOutDto> retrieveReservationHistory(RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
+	public List<RetrieveReservationHistoryOutDto> retrieveReservationHistory(String token, RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
 		//1. Declare Variable
 		String startDate = retrieveReservationHistoryInDto.getStartDate();
 		String endDate = retrieveReservationHistoryInDto.getEndDate();
-	
+
+		String employeeId = jwtUtil.extractSubject(token);
+
 		//paging variable
 		int skip = retrieveReservationHistoryInDto.getSkip() != null ? retrieveReservationHistoryInDto.getSkip() : 0;
 		int limit = retrieveReservationHistoryInDto.getLimit() != null ? retrieveReservationHistoryInDto.getLimit() : 5;
+
+		List<RetrieveReservationHistoryListOutDto> retrieveReservationHistoryListOutDto = reservationRepository.retrieveReservationHistoryList(RetrieveReservationHistoryListInDto.builder()
+				.employeeId(Integer.parseInt(employeeId))
+				.startDate(startDate)
+				.endDate(endDate)
+				.skip(skip)
+				.limit(limit)
+				.build());
 		
-//		List<RetrieveReservationHistoryListOutDto> retrieveReservationHistoryOutDto = reservationRepository.retrieveReservationHistoryList(RetrieveReservationHistoryListInDto.builder()
-//				.startDate(startDate)
-//				.endDate(endDate)
-//				.skip(skip)
-//				.limit(limit)
-//				.build());
-		
-		return null;
+		return retrieveReservationHistoryListOutDto.stream()
+				.map(dto -> RetrieveReservationHistoryOutDto.builder()
+							.date(dto.getDate())
+							.seatId(dto.getSeatId())
+							.seatName(dto.getSeatName())
+							.startTime(dto.getStartTime())
+							.endTime(dto.getEndTime())
+							.status(dto.getStatus()).build()
+				).collect(Collectors.toList());
 	}
 }

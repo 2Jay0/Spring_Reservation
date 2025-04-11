@@ -19,5 +19,7 @@ public class RetrieveReservationHistoryListInDto {
 		this.employeeId = employeeId;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.skip = skip;
+		this.limit = limit;
 	}
 }

@@ -2,22 +2,10 @@ package com.cns.aidd_reservation.reservation.controller;
 
 import java.util.List;
 
+import com.cns.aidd_reservation.reservation.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.cns.aidd_reservation.reservation.dto.CancelReservationInDto;
-import com.cns.aidd_reservation.reservation.dto.CancelReservationOutDto;
-import com.cns.aidd_reservation.reservation.dto.ExtendReservationTimeInDto;
-import com.cns.aidd_reservation.reservation.dto.ExtendReservationTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RegisterReservationInDto;
-import com.cns.aidd_reservation.reservation.dto.RegisterReservationOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveRemainSeatTimeOutDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryInDto;
-import com.cns.aidd_reservation.reservation.dto.RetrieveReservationHistoryOutDto;
 import com.cns.aidd_reservation.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,10 +16,17 @@ import lombok.RequiredArgsConstructor;
 public class ReservationController {
 	@Autowired
 	private final ReservationService reservationService;
-	
+
+	@RequestMapping(method = RequestMethod.GET, path = "/register")
+	public List<RetrieveCurrentReservationOutDto> retrieveCurrentReservation(@RequestHeader("Authorization") String token
+			, @RequestBody RetrieveCurrentReservationInDto retrieveCurrentReservationInDto) throws Exception{
+		return reservationService.retrieveCurrentReservation(token, retrieveCurrentReservationInDto);
+	}
+
 	@RequestMapping(method = RequestMethod.POST, path = "/register")
-	public RegisterReservationOutDto RegisterReservation(@RequestBody RegisterReservationInDto registerReservationInDto) throws Exception{
-		return reservationService.registerReservation(registerReservationInDto);
+	public RegisterReservationOutDto RegisterReservation(@RequestHeader("Authorization") String token
+														 , @RequestBody RegisterReservationInDto registerReservationInDto) throws Exception{
+		return reservationService.registerReservation(token, registerReservationInDto);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, path = "/cancel")
@@ -50,7 +45,8 @@ public class ReservationController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/history")
-	public List<RetrieveReservationHistoryOutDto> retrieveReservationHistory(@RequestBody RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
-		return reservationService.retrieveReservationHistory(retrieveReservationHistoryInDto);
+	public List<RetrieveReservationHistoryOutDto> retrieveReservationHistory(@RequestHeader("Authorization") String token
+																			 , @RequestBody RetrieveReservationHistoryInDto retrieveReservationHistoryInDto) throws Exception {
+		return reservationService.retrieveReservationHistory(token, retrieveReservationHistoryInDto);
 	}
 }

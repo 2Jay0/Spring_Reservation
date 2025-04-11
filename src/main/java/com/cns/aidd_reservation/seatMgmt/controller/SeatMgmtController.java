@@ -3,10 +3,7 @@ package com.cns.aidd_reservation.seatMgmt.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cns.aidd_reservation.seatMgmt.dto.CheckInSeatInDto;
 import com.cns.aidd_reservation.seatMgmt.dto.CheckInSeatOutDto;
@@ -46,7 +43,7 @@ public class SeatMgmtController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/total_available")
-	public RetrieveTotalAvailableSeatOutDto retriveTotalAvailableSeat(@RequestBody RetrieveTotalAvailableSeatInDto retrieveTotalAvailableSeatInDto) throws Exception{
+	public RetrieveTotalAvailableSeatOutDto retrieveTotalAvailableSeat(@RequestBody RetrieveTotalAvailableSeatInDto retrieveTotalAvailableSeatInDto) throws Exception{
 		return seatMgmtService.retriveTotalAvailableSeat(retrieveTotalAvailableSeatInDto);
 	}
 	
